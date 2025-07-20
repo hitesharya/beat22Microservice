@@ -1,0 +1,194 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Express Auth API",
+    "version": "1.0.0",
+    "description": "API documentation for Express.js authentication and user profile system"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully"
+          },
+          "400": {
+            "description": "User already exists"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login and get a JWT token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+
+    "/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "get token using refresh token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/refreshInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Get Access token  successful"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+"/me": {
+  "get": {
+    "tags": ["Users"],
+    "summary": "Get user profile",
+    "security": [
+      {
+        "accessTokenHeader": []
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "User profile",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserResponse"
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized"
+      }
+    }
+  }
+}
+
+  },
+  "components": {
+    "schemas": {
+      "RegisterInput": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string", "format": "password" },
+          "address": { "type": "string" },
+          "profileImage": { "type": "string" }
+        },
+        "required": ["name", "email", "password"]
+      },
+      "LoginInput": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string", "format": "password" }
+        },
+        "required": ["email", "password"]
+      },
+      "refreshInput": {
+        "type": "object",
+        "properties": {
+          "refresh": { "type": "string"}
+        },
+        "required": ["refresh"]
+      },
+
+      "UpdateProfileInput": {
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "example": "John Doe"
+    },
+    "address": {
+      "type": "string",
+      "example": "jaipur rajasthan"
+    },
+    "profileImage": {
+      "type": "string",
+      "example": "image_url"
+    }
+  },
+  "description": "At least one field must be provided to update profile"
+},
+"UserResponse": {
+  "type": "object",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "example": "64f9916bcfdd3b123abc4567"
+    },
+    "name": {
+      "type": "string",
+      "example": "John Doe"
+    },
+    "email": {
+      "type": "string",
+      "example": "john@example.com"
+    },
+    "__v": {
+      "type": "integer",
+      "example": 0
+    }
+  }
+}
+
+    },
+"securitySchemes": {
+  "accessTokenHeader": {
+    "type": "apiKey",
+    "in": "header",
+    "name": "Authorization",
+    "description": "Enter your JWT token as plain string (no 'Bearer' prefix)"
+  }
+}
+  }
+}
